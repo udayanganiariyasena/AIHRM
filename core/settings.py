@@ -68,16 +68,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'AIHRM_test',
-        'CLIENT': {
-            'host': 'mongodb+srv://nihalshantha470:htn10WDaGQFkrTmY@aihrm.bkt8q.mongodb.net/',
-            'authSource': 'admin',
-        },
-    }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
