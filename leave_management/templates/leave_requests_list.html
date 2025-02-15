@@ -1,0 +1,135 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Leave Requests {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <div class="card mb-4">
+            <div class="card-header pb-0">
+                <div class="col-md-12 mt-3">
+                    <a href="{% url 'apply_leave' %}" class="btn btn-primary"
+                           style="float: right">{% trans 'Apply Leave' %}</a>
+                </div>
+                <h6>{% trans 'Leave Requests' %}</h6>
+                <form method="GET" class="row g-3 mt-3">
+                    <div class="col-md-3">
+                        <label for="leave_type" class="form-label">{% trans 'Leave Type' %}</label>
+                        <select name="leave_type" id="leave_type" class="form-select">
+                            <option value="">{% trans 'All' %}</option>
+                            {% for type in leave_types %}
+                                <option value="{{ type }}"
+                                        {% if request.GET.leave_type == type %}selected{% endif %}>{{ type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">{% trans 'Status' %}</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">{% trans 'All' %}</option>
+                            {% for stat in statuses %}
+                                <option value="{{ stat }}"
+                                        {% if request.GET.status == stat %}selected{% endif %}>{{ stat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-12 mt-3">
+                        <button type="submit" class="btn btn-primary">{% trans 'Filter' %}</button>
+                        <a href="{% url 'leave_requests_list' %}" class="btn btn-secondary">{% trans 'Reset' %}</a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                        <tr>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Employee' %}</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{% trans 'Leave Type' %}</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Start Date' %}</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'End Date' %}</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Status' %}</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Actions' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for leave in page_obj %}
+                            <tr>
+                                <td>
+                                    <p class="text-xs font-weight-bold mb-0">{{ leave.user.first_name }}</p>
+                                    <p class="text-xs text-secondary mb-0">{{ leave.user.email }}</p>
+                                </td>
+                                <td>
+                                    <p class="text-xs font-weight-bold mb-0">{{ leave.leave_type }}</p>
+                                </td>
+                                <td class="text-center">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ leave.start_date }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ leave.end_date }}</span>
+                                </td>
+                                <td class="text-center">
+                                    {% if leave.status == 'Pending' %}
+                                        <span class="badge bg-warning">{% trans 'Pending' %}</span>
+                                    {% elif leave.status == 'Approved' %}
+                                        <span class="badge bg-success">{% trans 'Approved' %}</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">{% trans 'Rejected' %}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'edit_leave_request' leave.id %}"
+                                       class="edit-button font-weight-bold text-xs">{% trans 'Edit' %}</a>
+                                    {% if request.user.is_superuser %}
+                                    <a href="{% url 'delete_leave_request' leave.id %}"
+                                       class="delete-button font-weight-bold text-xs"
+                                       onclick="return confirm('{% trans 'Are you sure you want to delete this leave request?' %}');">
+                                        {% trans 'Delete' %}
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-secondary">
+                                    {% trans 'No leave requests found' %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock content %}

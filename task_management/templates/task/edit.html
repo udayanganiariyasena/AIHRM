@@ -1,0 +1,104 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Create Task {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <form method="post" action="{% url 'edit_task' task.id %}" enctype="multipart/form-data" id="task-form"
+              style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+            <div class="row">
+                <!-- First Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="task-title" class="form-control-label">Title</label>
+                        <input class="form-control" type="text" name="title" value="{{ task.title }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description" class="form-control-label">Description</label>
+                        <textarea class="form-control" name="description" rows="4"
+                                  required>{{ task.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-image" class="form-control-label">Attachment(Optional)</label>
+                        <input class="form-control" type="file" name="image">
+                        {% if task.image %}
+                            <a href="{{ task.image.name }}" target="_blank" download>Download Current Attachment</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Second Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="task-assignee" class="form-control-label">Assignee</label>
+                        <select class="form-control" name="assignee">
+                            <option value="">Select Assignee</option>
+                            {% for employee in employees %}
+                                <option value="{{ employee.id }}"
+                                        {% if task.assignee.id == employee.id %}selected{% endif %}>
+                                    {{ employee.full_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-status" class="form-control-label">Status</label>
+                        <select class="form-control" name="status" required>
+                            {% for status, status_label in task.STATUS_CHOICES %}
+                                <option value="{{ status }}"
+                                        {% if task.status == status %}selected{% endif %}>{{ status_label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="due-date" class="form-control-label">Due Date</label>
+                        <input class="form-control" type="date" name="due-date"
+                               value="{{ task.due_date|date:'Y-m-d' }}">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Task</button>
+        </form>
+
+
+        <form method="post" action="{% url 'create_comment' %}" enctype="multipart/form-data"
+              style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+
+            <div class="row">
+                <!-- Left Column - Add Comment -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="task-comments" class="form-control-label">Add Comment</label>
+                        <textarea class="form-control" name="comment" rows="4"
+                                  placeholder="Add any comments or notes about the task"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Save Comment</button>
+                </div>
+
+                <!-- Right Column - Display Existing Comments -->
+                <div class="col-md-6">
+                    <input type="hidden" name="task" value="{{ task.id }}">
+                    <label for="existing-comments" class="form-control-label">Previous Comments</label>
+                    <div class="border p-3" style="max-height: 200px; overflow-y: auto;">
+                        {% for comment in task.comments.all %}
+                            <div class="mb-2 p-2 border-bottom">
+                                <strong>{{ comment.author }}</strong> <br>
+                                <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                                <p>{{ comment.comment }}</p>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No comments yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+        {% include "includes/footer.html" %}
+    </div>
+{% endblock content %}

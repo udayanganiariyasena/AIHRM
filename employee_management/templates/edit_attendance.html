@@ -1,0 +1,56 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Edit Employee Attendance {% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <form method="post" id="edit-attendance-form" style="max-width: 80%; margin-left: auto; margin-right: auto;">
+        {% csrf_token %}
+        <div id="edit-attendance-container">
+            <div class="attendance-entry mb-3">
+                <h5>Edit Attendance</h5>
+                <input type="hidden" name="attendance-id" value="{{ attendance.id }}">
+                <input type="hidden" name="employee-id" value="{{ attendance.employee.id }}">
+                <div class="form-group">
+                    <label class="form-control-label">Employee</label>
+                    <select class="form-control" name="employee-id-dup" disabled>
+                        {% for employee in employees %}
+                        <option value="{{ employee.id }}" {% if employee.id == attendance.employee.id %}selected{% endif %}>{{ employee.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label">Date</label>
+                    <input class="form-control" type="date" name="attendance-date" value="{{ attendance.date|date:'Y-m-d' }}">
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label">Status</label>
+                    <select class="form-control" name="attendance-status">
+                        <option value="Present" {% if attendance.status == "Present" %}selected{% endif %}>Present</option>
+                        <option value="Absent" {% if attendance.status == "Absent" %}selected{% endif %}>Absent</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-danger remove-attendance">Remove</button>
+                <hr>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Attendance</button>
+    </form>
+
+    {% include "includes/footer.html" %}
+</div>
+
+<script>
+    document.getElementById('edit-attendance-container').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-attendance')) {
+            const entry = event.target.closest('.attendance-entry');
+            if (document.querySelectorAll('.attendance-entry').length > 1) {
+                entry.remove();
+            } else {
+                alert('At least one attendance record must be present.');
+            }
+        }
+    });
+</script>
+{% endblock content %}

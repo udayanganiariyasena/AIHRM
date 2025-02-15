@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Request Document {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <form method="post" action="{% url 'request_letter' %}" enctype="multipart/form-data"
+              style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+
+            <div class="row">
+                <h5 class="mb-4">Request a Document</h5>
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="document-type" class="form-control-label">Document Type</label>
+                        <select class="form-control" name="document_type" required>
+                            <option value="">Select Document Type</option>
+                            <option value="Experience Letter">Experience Letter</option>
+                            <option value="Salary Certificate">Salary Certificate</option>
+                            <option value="Employment Verification">Employment Verification</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="reason" class="form-control-label">Reason</label>
+                        <textarea class="form-control" name="reason" rows="5"
+                                  placeholder="Provide a reason for requesting this document" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+        </form>
+
+        {% include "includes/footer.html" %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employment Verification</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; padding: 20px; }
+        .header, .footer { text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Employment Verification Letter</h2>
+        </div>
+        <p>Date: {{ date }}</p>
+        <p>To Whom It May Concern,</p>
+        <p>This letter is to verify that {{ employee_name }} (Employee ID: {{ employee_id }}) has been employed with {{ company_name }} since {{ start_date }} and currently holds the position of {{ job_title }} in the {{ department }} department.</p>
+        <p>If you require further verification, please feel free to contact our HR department.</p>
+        <br>
+        <p>Sincerely,</p>
+        <p><strong>{{ company_name }}</strong></p>
+    </div>
+</body>
+</html>

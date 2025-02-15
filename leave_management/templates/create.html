@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Apply Leave {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <form method="post" action="{% url 'apply_leave' %}" enctype="multipart/form-data"
+              style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+
+            <div class="row">
+                <h5 class="mb-4">Apply for Leave</h5>
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="leave-type" class="form-control-label">Leave Type</label>
+                        <select class="form-control" name="leave_type" required>
+                            <option value="">Select Leave Type</option>
+                            <option value="Sick Leave">Sick Leave</option>
+                            <option value="Casual Leave">Casual Leave</option>
+                            <option value="Annual Leave">Annual Leave</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start-date" class="form-control-label">Start Date</label>
+                        <input class="form-control" type="date" name="start_date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end-date" class="form-control-label">End Date</label>
+                        <input class="form-control" type="date" name="end_date" required>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="reason" class="form-control-label">Reason</label>
+                        <textarea class="form-control" name="reason" rows="5"
+                                  placeholder="Provide a reason for your leave" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="attachment" class="form-control-label">Attachment (Optional)</label>
+                        <input class="form-control" type="file" name="attachment">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Leave Request</button>
+        </form>
+
+        {% include "includes/footer.html" %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,137 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} List Staff Members {% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="card mb-4">
+        <div class="card-header pb-0">
+            <h6>{% trans 'Staff Members' %}</h6>
+            <form method="GET" class="row g-3 mt-3">
+                <div class="col-md-3">
+                    <label for="department" class="form-label">{% trans 'Department' %}</label>
+                    <select name="department" id="department" class="form-select">
+                        <option value="">{% trans 'All' %}</option>
+                        {% for department in departments %}
+                        <option value="{{ department }}" {% if request.GET.department == department %}selected{% endif %}>{{ department }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="role" class="form-label">{% trans 'Role' %}</label>
+                    <select name="role" id="role" class="form-select">
+                        <option value="">{% trans 'All' %}</option>
+                        {% for role in roles %}
+                        <option value="{{ role }}" {% if request.GET.role == role %}selected{% endif %}>{{ role }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">{% trans 'Status' %}</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">{% trans 'All' %}</option>
+                        <option value="online" {% if request.GET.status == 'online' %}selected{% endif %}>{% trans 'Online' %}</option>
+                        <option value="offline" {% if request.GET.status == 'offline' %}selected{% endif %}>{% trans 'Offline' %}</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="joined_date" class="form-label">{% trans 'Joined After' %}</label>
+                    <input type="date" name="joined_date" id="joined_date" class="form-control" value="{{ request.GET.joined_date }}">
+                </div>
+                <div class="col-md-12 mt-3">
+                    <button type="submit" class="btn btn-primary">{% trans 'Filter' %}</button>
+                    <a href="{% url 'list_employees' %}" class="btn btn-secondary">{% trans 'Reset' %}</a>
+                </div>
+            </form>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Employee ID' %}</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Employee' %}</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{% trans 'Department' %}</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Status' %}</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{% trans 'Joined Date' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in page_obj %}
+                        <tr>
+                        <td>
+                                <div class="d-flex px-2 py-1">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <p class="text-xs text-secondary mb-0">{{ employee.id }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex px-2 py-1">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="mb-0 text-sm">{{ employee.full_name }}</h6>
+                                        <p class="text-xs text-secondary mb-0">{{ employee.email }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="text-xs font-weight-bold mb-0">{{ employee.department }}</p>
+                                <p class="text-xs text-secondary mb-0">{{ employee.role }}</p>
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                                {% if employee.status == 1 %}
+                                <span class="badge badge-sm bg-gradient-success">{% trans 'Enable' %}</span>
+                                {% else %}
+                                <span class="badge badge-sm bg-gradient-secondary">{% trans 'Disable' %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle text-center">
+                                <span class="text-secondary text-xs font-weight-bold">{{ employee.joining_date }}</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary">
+                                {% trans 'No employees found' %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-center mt-3">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    {% include "includes/footer.html" %}
+</div>
+{% endblock content %}

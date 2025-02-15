@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Experience Letter</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; padding: 20px; }
+        .header, .footer { text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Experience Letter</h2>
+        </div>
+        <p>Date: {{ date }}</p>
+        <p>To,</p>
+        <p>{{ employee_name }}</p>
+        <p>This is to certify that {{ employee_name }} (Employee ID: {{ employee_id }}) was employed with us as a {{ job_title }} in the {{ department }} department from {{ start_date }} to {{ end_date }}. During this time, they performed their duties diligently and contributed significantly to our organization.</p>
+        <p>We wish {{ employee_name }} success in their future endeavors.</p>
+        <br>
+        <p>Sincerely,</p>
+        <p><strong>{{ company_name }}</strong></p>
+    </div>
+</body>
+</html>

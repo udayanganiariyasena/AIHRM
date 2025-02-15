@@ -1,0 +1,107 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Register Employees {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+
+        <form method="post" id="employee-form" style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+            <div id="employee-container">
+                <div class="employee-entry mb-3">
+                    <h5>Employee Details</h5>
+                    <div class="form-group">
+                        <label for="toggle-form" class="form-control-label">Is Staff</label>
+                        <select class="form-control" name="employee-staff-status[]">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-name" class="form-control-label">Full Name</label>
+                        <input class="form-control" type="text" name="employee-name[]" placeholder="Enter full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-email" class="form-control-label">Email Address</label>
+                        <input class="form-control" type="email" name="employee-email[]"
+                               placeholder="Enter email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-phone" class="form-control-label">Phone Number</label>
+                        <input class="form-control" type="tel" name="employee-phone[]" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-address" class="form-control-label">Address</label>
+                        <input class="form-control" type="text" name="employee-address[]" placeholder="Enter address">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-dob" class="form-control-label">Date of Birth</label>
+                        <input class="form-control" type="date" name="employee-dob[]">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-joining-date" class="form-control-label">Joining Date</label>
+                        <input class="form-control" type="date" name="employee-joining-date[]">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-department" class="form-control-label">Department</label>
+                        <input class="form-control" type="text" name="employee-department[]"
+                               placeholder="Enter department">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-role" class="form-control-label">Role</label>
+                        <input class="form-control" type="text" name="employee-role[]" placeholder="Enter Role">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-basic-salary" class="form-control-label">Basic Salary</label>
+                        <input class="form-control" type="number" name="employee-basic_salary[]"
+                               placeholder="Enter Basic Salary">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-allowances" class="form-control-label">Allowances</label>
+                        <input class="form-control" type="number" name="employee-allowances[]"
+                               placeholder="Enter Allowances">
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="employee-password" class="form-control-label">Password</label>
+                        <input class="form-control" type="password" name="employee-password[]"
+                               placeholder="Enter Password">
+                    </div>
+                    <button type="button" class="btn btn-danger remove-employee">Remove</button>
+                    <hr>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="add-employee">Add Another Employee</button>
+            <button type="submit" class="btn btn-primary">Register Employees</button>
+        </form>
+
+        {% include "includes/footer.html" %}
+    </div>
+
+    <script>
+        // Add new employee form entry
+        document.getElementById('add-employee').addEventListener('click', function () {
+            const container = document.getElementById('employee-container');
+            const newEntry = document.querySelector('.employee-entry').cloneNode(true);
+            newEntry.querySelectorAll('input').forEach(input => input.value = '');
+            container.appendChild(newEntry);
+        });
+
+        // Remove an employee entry
+        document.getElementById('employee-container').addEventListener('click', function (event) {
+            if (event.target.classList.contains('remove-employee')) {
+                const entry = event.target.closest('.employee-entry');
+                if (document.querySelectorAll('.employee-entry').length > 1) {
+                    entry.remove();
+                } else {
+                    alert('At least one employee must be entered.');
+                }
+            }
+        });
+    </script>
+{% endblock content %}

@@ -1,0 +1,109 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Edit Employee {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <form method="post" id="employee-form" style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+            <div id="employee-container">
+                <div class="employee-entry mb-3">
+                    <h5>Employee Details</h5>
+                    <div class="form-group">
+                        <label for="toggle-form" class="form-control-label">Enable/Disable Employee (Login
+                            Restriction)</label>
+                        <select class="form-control" name="employee-status">
+                            <option value="1" {% if employee.status == 1 %} selected {% endif %}>Enable</option>
+                            <option value="0" {% if employee.status == 0 %} selected {% endif %}>Disable</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-name" class="form-control-label">Full Name</label>
+                        <input class="form-control" type="text" name="employee-name" value="{{ employee.full_name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-email" class="form-control-label">Email Address</label>
+                        <input class="form-control" type="email" name="employee-email" value="{{ employee.email }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-phone" class="form-control-label">Phone Number</label>
+                        <input class="form-control" type="tel" name="employee-phone" value="{{ employee.phone }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-address" class="form-control-label">Address</label>
+                        <input class="form-control" type="text" name="employee-address" value="{{ employee.address }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-dob" class="form-control-label">Date of Birth</label>
+                        <input class="form-control" type="date" name="employee-dob"
+                               value="{{ employee.date_of_birth|date:'Y-m-d' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-joining-date" class="form-control-label">Joining Date</label>
+                        <input class="form-control" type="date" name="employee-joining-date"
+                               value="{{ employee.joining_date|date:'Y-m-d' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-department" class="form-control-label">Department</label>
+                        <input class="form-control" type="text" name="employee-department"
+                               value="{{ employee.department }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-role" class="form-control-label">Role</label>
+                        <input class="form-control" type="text" name="employee-role" value="{{ employee.role }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-basic-salary" class="form-control-label">Basic Salary</label>
+                        <input class="form-control" type="number" name="employee-basic_salary"
+                               value="{{ employee.basic_salary }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-allowances" class="form-control-label">Allowances</label>
+                        <input class="form-control" type="number" name="employee-allowance"
+                               value="{{ employee.allowance }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-password" class="form-control-label">Password</label>
+                        <input class="form-control" type="password" name="employee-password" id="employee-password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-conf-password" class="form-control-label">Confirm Password</label>
+                        <input class="form-control" type="password" name="employee-conf-password"
+                               id="employee-conf-password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submit-btn">Save Changes</button>
+                </div>
+            </div>
+        </form>
+
+        {% include "includes/footer.html" %}
+    </div>
+
+    <script>
+        document.getElementById("employee-form").addEventListener("submit", function (event) {
+            var password = document.getElementById("employee-password").value;
+            var confirmPassword = document.getElementById("employee-conf-password").value;
+
+            // Check if password is entered
+            if (password && !confirmPassword) {
+                alert("Please confirm your password.");
+                event.preventDefault();  // Prevent form submission
+                return;
+            }
+
+            // Check if both passwords match
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                event.preventDefault();  // Prevent form submission
+                return;
+            }
+        });
+    </script>
+{% endblock content %}

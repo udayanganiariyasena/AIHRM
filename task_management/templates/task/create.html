@@ -1,0 +1,63 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Create Task {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <form method="post" action="{% url 'create_task' %}" id="task-form" style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+            <div class="row">
+                <!-- First Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="task-title" class="form-control-label">Title</label>
+                        <input class="form-control" type="text" name="title" placeholder="Enter task title"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description" class="form-control-label">Description</label>
+                        <textarea class="form-control" name="description" rows="4"
+                                  placeholder="Enter task description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-image" class="form-control-label">Attachment</label>
+                        <input class="form-control" type="file" name="image">
+                    </div>
+                </div>
+
+                <!-- Second Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="task-assignee" class="form-control-label">Assignee</label>
+                        <select class="form-control" name="assignee" required>
+                            <option value="">Select Assignee</option>
+                            <!-- Add employee options dynamically here -->
+                            {% for employee in employees %}
+                                <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-status" class="form-control-label">Status</label>
+                        <select class="form-control" name="status" required>
+                            <option value="">Select Status</option>
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="On Hold">On Hold</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="due-date" class="form-control-label">Due Date</label>
+                        <input class="form-control" type="date" name="due-date">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Task</button>
+        </form>
+
+        {% include "includes/footer.html" %}
+    </div>
+{% endblock content %}

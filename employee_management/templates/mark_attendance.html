@@ -1,0 +1,66 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Employee Attendance {% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <form method="post" id="attendance-form" style="max-width: 80%; margin-left: auto; margin-right: auto;">
+        {% csrf_token %}
+        <div id="attendance-container">
+            <div class="attendance-entry mb-3">
+                <h5>Mark Attendance</h5>
+                <div class="form-group">
+                    <label for="employee-id" class="form-control-label">Employee</label>
+                    <select class="form-control" name="employee-id[]">
+                        <option value="">Select Employee</option>
+                        {% for employee in employees %}
+                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendance-date" class="form-control-label">Date</label>
+                    <input class="form-control" type="date" name="attendance-date[]">
+                </div>
+                <div class="form-group">
+                    <label for="attendance-status" class="form-control-label">Status</label>
+                    <select class="form-control" name="attendance-status[]">
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-danger remove-attendance">Remove</button>
+                <hr>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="add-attendance">Add Another Attendance</button>
+        <button type="submit" class="btn btn-primary">Submit Attendance</button>
+    </form>
+
+    {% include "includes/footer.html" %}
+</div>
+
+<script>
+    // Add new attendance entry
+    document.getElementById('add-attendance').addEventListener('click', function() {
+        const container = document.getElementById('attendance-container');
+        const newEntry = document.querySelector('.attendance-entry').cloneNode(true);
+        newEntry.querySelectorAll('input, select').forEach(input => input.value = '');
+        container.appendChild(newEntry);
+    });
+
+    // Remove an attendance entry
+    document.getElementById('attendance-container').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-attendance')) {
+            const entry = event.target.closest('.attendance-entry');
+            if (document.querySelectorAll('.attendance-entry').length > 1) {
+                entry.remove();
+            } else {
+                alert('At least one attendance record must be entered.');
+            }
+        }
+    });
+</script>
+{% endblock content %}

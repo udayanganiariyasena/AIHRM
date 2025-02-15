@@ -1,0 +1,26 @@
+.navbar-vertical.navbar-expand-xs .navbar-collapse {
+    height: fit-content !important;
+}
+
+.edit-button {
+    background: green;
+    color: white !important;
+    padding-left: 5px;
+    padding-right: 3px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.delete-button {
+    background: red;
+    color: white !important;
+    padding-left: 5px;
+    padding-right: 3px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 5px;
+}
+
+.navbar-nav > .nav-item .nav-link.active {
+    background-color: pink !important;
+}

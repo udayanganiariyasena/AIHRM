@@ -1,0 +1,99 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Edit Leave Request{% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <form method="post" action="{% url 'edit_leave_request' leave_request.id %}" enctype="multipart/form-data"
+              style="max-width: 80%; margin-left: auto; margin-right: auto;">
+            {% csrf_token %}
+
+            <div class="row">
+                <h5 class="mb-4">Edit Leave Request</h5>
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="leave-type" class="form-control-label">Leave Type</label>
+                        <select class="form-control" name="leave_type" required>
+                            <option value="">Select Leave Type</option>
+                            <option value="Sick Leave"
+                                    {% if leave_request.leave_type == 'Sick Leave' %}selected{% endif %}>Sick Leave
+                            </option>
+                            <option value="Casual Leave"
+                                    {% if leave_request.leave_type == 'Casual Leave' %}selected{% endif %}>Casual Leave
+                            </option>
+                            <option value="Annual Leave"
+                                    {% if leave_request.leave_type == 'Annual Leave' %}selected{% endif %}>Annual Leave
+                            </option>
+                            <option value="Maternity Leave"
+                                    {% if leave_request.leave_type == 'Maternity Leave' %}selected{% endif %}>Maternity
+                                Leave
+                            </option>
+                            <option value="Other" {% if leave_request.leave_type == 'Other' %}selected{% endif %}>
+                                Other
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start-date" class="form-control-label">Start Date</label>
+                        <input class="form-control" type="date" name="start_date"
+                               value="{{ leave_request.start_date|date:'Y-m-d' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end-date" class="form-control-label">End Date</label>
+                        <input class="form-control" type="date" name="end_date"
+                               value="{{ leave_request.end_date|date:'Y-m-d' }}" required>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="reason" class="form-control-label">Reason</label>
+                        <textarea class="form-control" name="reason" rows="5"
+                                  required>{{ leave_request.reason }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="attachment" class="form-control-label">Attachment (Optional)</label>
+                        <input class="form-control" type="file" name="attachment">
+                        {% if leave_request.attachment %}
+                            <p class="mt-2">Current Attachment:
+                                <a href="{{ leave_request.attachment.name }}" target="_blank" download>Download Current Attachment</a>
+                            </p>
+                        {% endif %}
+
+                    </div>
+                    {% if request.user.is_superuser %}
+                        <div class="form-group">
+                            <label for="status" class="form-control-label">Status</label>
+                            <select class="form-control" name="status" required>
+                                <option value="Pending" {% if leave_request.status == "Pending" %}selected{% endif %}>
+                                    Pending
+                                </option>
+                                <option value="Approved" {% if leave_request.status == "Approved" %}selected{% endif %}>
+                                    Approved
+                                </option>
+                                <option value="Rejected" {% if leave_request.status == "Rejected" %}selected{% endif %}>
+                                    Rejected
+                                </option>
+                            </select>
+                        </div>
+                    {% endif %}
+
+                    {% if not request.user.is_superuser %}
+                        <input type="hidden" name="status" value="{{ leave_request.status }}">
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Leave Request</button>
+            <a href="{% url 'leave_requests_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+
+        {% include "includes/footer.html" %}
+    </div>
+{% endblock content %}

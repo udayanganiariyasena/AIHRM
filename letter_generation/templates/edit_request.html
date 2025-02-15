@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+{% load i18n static %}
+
+{% block title %} Edit Document Request {% endblock title %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">{% trans 'Edit Document Request' %}</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if request.user.is_superuser %}
+                        <div class="mb-3">
+                            <label class="form-label">{% trans 'Employee' %}</label>
+                            <input type="text" class="form-control" value="{{ document_request.user.username }}"
+                                   disabled>
+                        </div>
+                    {% endif %}
+
+                    <!-- Allow editing only if the request is still pending -->
+                    {% if request.user == document_request.user %}
+                        <div class="mb-3">
+                            <label class="form-label">{% trans 'Document Type' %}</label>
+                            <select class="form-control" name="document_type" required
+                                    {% if document_request.status != "Pending" %}disabled{% endif %}>
+                                <option value="">Select Document Type</option>
+                                <option value="Experience Letter"
+                                        {% if document_request.document_type == "Experience Letter" %}selected{% endif %}>
+                                    Experience Letter
+                                </option>
+                                <option value="Salary Certificate"
+                                        {% if document_request.document_type == "Salary Certificate" %}selected{% endif %}>
+                                    Salary Certificate
+                                </option>
+                                <option value="Employment Verification"
+                                        {% if document_request.document_type == "Employment Verification" %}selected{% endif %}>
+                                    Employment Verification
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{% trans 'Reason' %}</label>
+                            <textarea name="reason" class="form-control" rows="4" required
+                                      {% if document_request.status != "Pending" %}disabled{% endif %}>{{ document_request.reason }}</textarea>
+                        </div>
+                    {% else %}
+                        <div class="mb-3">
+                            <label class="form-label">{% trans 'Document Type' %}</label>
+                            <input type="text" class="form-control" value="{{ document_request.document_type }}"
+                                   disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{% trans 'Reason' %}</label>
+                            <textarea class="form-control" rows="4" disabled>{{ document_request.reason }}</textarea>
+                        </div>
+                    {% endif %}
+
+                    <!-- Status Field (Editable by Admin Only) -->
+                    <div class="mb-3">
+                        <label class="form-label">{% trans 'Status' %}</label>
+                        <select name="status_dup" class="form-select" required
+                                {% if not request.user.is_superuser %}disabled{% endif %}>
+                            <option value="Pending" {% if document_request.status == "Pending" %}selected{% endif %}
+                                    {% if document_request.status == "Approved" %}disabled{% endif %}>{% trans 'Pending' %}</option>
+                            <option value="Approved" {% if document_request.status == "Approved" %}selected{% endif %}
+                                    {% if document_request.status == "Approved" %}disabled{% endif %}>{% trans 'Approved' %}</option>
+                            <option value="Rejected" {% if document_request.status == "Rejected" %}selected{% endif %}
+                                    {% if document_request.status == "Approved" %}disabled{% endif %}>{% trans 'Rejected' %}</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" name="status" value="{{ document_request.status }}">
+                    {% if document_request.status == "Pending" %}
+                        <button type="submit" class="btn btn-primary">{% trans 'Save Changes' %}</button>
+                        <a href="{% url 'document_index' %}" class="btn btn-secondary">{% trans 'Cancel' %}</a>
+                    {% endif %}
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

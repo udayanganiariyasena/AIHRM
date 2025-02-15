@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Certificate</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; padding: 20px; }
+        .header, .footer { text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Salary Certificate</h2>
+        </div>
+        <p>Date: {{ date }}</p>
+        <p>To Whom It May Concern,</p>
+        <p>This is to certify that {{ employee_name }} (Employee ID: {{ employee_id }}), holding the position of {{ job_title }} in our company, has been employed with us since {{ start_date }}.</p>
+        <p>The details of the salary drawn by {{ employee_name }} are as follows:</p>
+        <ul>
+            <li>Basic Salary: {{ basic_salary }}</li>
+            <li>Allowances: {{ allowances }}</li>
+            <li>Gross Salary: {{ gross_salary }}</li>
+        </ul>
+        <p>This certificate is issued upon request for official purposes.</p>
+        <br>
+        <p>Sincerely,</p>
+        <p><strong>{{ company_name }}</strong></p>
+    </div>
+</body>
+</html>
