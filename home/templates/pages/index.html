@@ -504,48 +504,64 @@
         </style>
 
         <script>
-            function toggleChat() {
-                const chatContainer = document.getElementById('chatContainer');
-                chatContainer.style.display = chatContainer.style.display === 'none' ? 'block' : 'none';
-            }
+    function toggleChat() {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.style.display = chatContainer.style.display === 'none' ? 'block' : 'none';
+    }
 
-            function sendMessage() {
-                const userInput = document.getElementById('userInput');
-                const message = userInput.value.trim();
+    function getBotResponse(userMessage) {
+        const msg = userMessage.toLowerCase();
+        
+        if (msg.includes('hello') || msg.includes('hi')) {
+            return "Hello! How can I assist you today?";
+        } else if (msg.includes('leave')) {
+            return "You can apply for leave through the Leave Management section.";
+        } else if (msg.includes('task')) {
+            return "Check your tasks in the Task Management section.";
+        } else if (msg.includes('hr')) {
+            return "For HR-related queries, please contact HR directly.";
+        } else {
+            return "I'm sorry, I didn't understand that. Can you please rephrase?";
+        }
+    }
 
-                if (message) {
-                    // Add user message
-                    const messagesDiv = document.getElementById('chatMessages');
-                    messagesDiv.innerHTML += `
-                        <div class="user-message">
-                            <div class="message-content">${message}</div>
-                        </div>
-                    `;
+    function sendMessage() {
+        const userInput = document.getElementById('userInput');
+        const message = userInput.value.trim();
 
-                    // Simulate bot response (replace with actual API call)
-                    setTimeout(() => {
-                        messagesDiv.innerHTML += `
-                            <div class="bot-message">
-                                <div class="message-content">
-                                    Thanks for your message! We will contact you ASAP.
-                                </div>
-                            </div>
-                        `;
-                        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                    }, 1000);
+        if (message) {
+            const messagesDiv = document.getElementById('chatMessages');
+            
+            // Add user message
+            messagesDiv.innerHTML += `
+                <div class="user-message">
+                    <div class="message-content">${message}</div>
+                </div>
+            `;
 
-                    // Clear input
-                    userInput.value = '';
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                }
-            }
+            // Simulate bot response
+            setTimeout(() => {
+                const botResponse = getBotResponse(message);
+                messagesDiv.innerHTML += `
+                    <div class="bot-message">
+                        <div class="message-content">${botResponse}</div>
+                    </div>
+                `;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 1000);
 
-            function handleKeyPress(event) {
-                if (event.key === 'Enter') {
-                    sendMessage();
-                }
-            }
-        </script>
+            // Clear input
+            userInput.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+</script>
 
 {% endblock content %}
 
