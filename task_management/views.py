@@ -75,7 +75,9 @@ def edit_task(request, task_id):
 
         assignee_id = request.POST.get('assignee')
         if assignee_id:
-            task.assignee = Employee.objects.get(id=int(assignee_id))
+            employee = Employee.objects.get(id=int(assignee_id))
+            task.assignee = User.objects.get(email=employee.email)
+
 
         task.save()
         return redirect('tasks_index')  # Redirect to the task list or detail page
