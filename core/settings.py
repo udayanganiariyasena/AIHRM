@@ -71,9 +71,9 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'AIHRM_test',
+        'NAME': 'AIHRM',
         'CLIENT': {
-            'host': 'mongodb+srv://nihalshantha470:htn10WDaGQFkrTmY@aihrm.bkt8q.mongodb.net/',
+            'host': 'mongodb+srv://siranthikaudayangani:pMBRH3OcPWuSm3P1@cluster0.3btg2lq.mongodb.net/',
             'authSource': 'admin',
         },
     }
