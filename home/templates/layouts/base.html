@@ -184,62 +184,160 @@
         </style>
 
         <script>
-    function toggleChat() {
-        const chatContainer = document.getElementById('chatContainer');
-        chatContainer.style.display = chatContainer.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function getBotResponse(userMessage) {
-        const msg = userMessage.toLowerCase();
-        
-        if (msg.includes('hello') || msg.includes('hi')) {
-            return "Hello! How can I assist you today?";
-        } else if (msg.includes('leave')) {
-            return "You can apply for leave through the Leave Management section.";
-        } else if (msg.includes('task')) {
-            return "Check your tasks in the Task Management section.";
-        } else if (msg.includes('hr')) {
-            return "For HR-related queries, please contact HR directly.";
-        } else {
-            return "I'm sorry, I didn't understand that. Can you please rephrase?";
-        }
-    }
-
-    function sendMessage() {
-        const userInput = document.getElementById('userInput');
-        const message = userInput.value.trim();
-
-        if (message) {
-            const messagesDiv = document.getElementById('chatMessages');
+        // Toggle chat visibility
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'block' : 'none';
             
-            // Add user message
+            // Clear input field when opening chat
+            if (chatContainer.style.display === 'block') {
+                document.getElementById('userInput').value = '';
+                document.getElementById('userInput').focus();
+            }
+        }
+
+        // Show typing indicator animation
+        function showTypingIndicator() {
+            const messagesDiv = document.getElementById('chatMessages');
             messagesDiv.innerHTML += `
-                <div class="user-message">
-                    <div class="message-content">${message}</div>
+                <div class="bot-message typing-indicator">
+                    <div class="message-content">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
                 </div>
             `;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
 
-            // Simulate bot response
-            setTimeout(() => {
-                const botResponse = getBotResponse(message);
+        // Remove typing indicator
+        function hideTypingIndicator() {
+            const indicator = document.querySelector('.typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // Get response from FastAPI backend
+        async function getBotResponse(userMessage) {
+            try {
+                showTypingIndicator();
+//https://fastapihrms-production.up.railway.app/
+                const response = await fetch('http://localhost:8000/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: userMessage })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data.response || "I didn't get a proper response from the HR system.";
+                
+            } catch (error) {
+                console.error('Error fetching bot response:', error);
+                // Fallback responses
+                const msg = userMessage.toLowerCase();
+                if (msg.includes('hello') || msg.includes('hi')) {
+                    return "Hello! The HR system seems busy right now.";
+                } else if (msg.includes('leave')) {
+                    return "For leave applications, please visit the Leave Management section.";
+                } else if (msg.includes('hr')) {
+                    return "You can contact HR at hr@yourcompany.com";
+                }
+                return "I'm having trouble connecting to HR services. Please try again later.";
+            } finally {
+                hideTypingIndicator();
+            }
+        }
+
+        // Send message to chatbot
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+
+            if (message) {
+                const messagesDiv = document.getElementById('chatMessages');
+                
+                // Add user message
+                messagesDiv.innerHTML += `
+                    <div class="user-message">
+                        <div class="message-content">${message}</div>
+                    </div>
+                `;
+                userInput.value = '';
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                
+                // Get and display bot response
+                const botResponse = await getBotResponse(message);
+                
                 messagesDiv.innerHTML += `
                     <div class="bot-message">
                         <div class="message-content">${botResponse}</div>
                     </div>
                 `;
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }, 1000);
-
-            // Clear input
-            userInput.value = '';
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
         }
-    }
 
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            sendMessage();
+        // Handle Enter key press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
         }
-    }
-</script>
+
+        // Initialize chat when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('userInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', handleKeyPress);
+            }
+        });
+    </script>
+
+    <style>
+        /* Typing indicator animation */
+        .typing-indicator .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .typing-indicator .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        /* Chat message styles */
+        .user-message .message-content {
+            background: #007bff;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 18px 18px 0 18px;
+            margin-left: auto;
+            max-width: 80%;
+        }
+        .bot-message .message-content {
+            background: #f1f1f1;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 18px 18px 18px 0;
+            max-width: 80%;
+        }
+    </style>
 </html>

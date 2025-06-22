@@ -10,6 +10,7 @@ class Employee(models.Model):
     id = models.ObjectIdField(primary_key=True)  # MongoDB ObjectId as primary key
     full_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
+    epf_number = models.CharField(max_length=20, null=True, blank=True)
     phone = models.CharField(max_length=15)
     address = models.TextField()
     date_of_birth = models.DateField()
@@ -17,6 +18,7 @@ class Employee(models.Model):
     department = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
     basic_salary = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    leave_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     allowance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.SmallIntegerField(choices=STATUS_CHOICES, default=1)
     is_staff = models.SmallIntegerField(choices=STATUS_CHOICES, default=0)

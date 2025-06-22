@@ -28,9 +28,17 @@
                         <input class="form-control" type="email" name="employee-email[]"
                                placeholder="Enter email address">
                     </div>
+
+                    <div class="form-group">
+                        <label for="employee-epf" class="form-control-label">EPF Number</label>
+                        <input class="form-control" type="text" name="employee-epf[]" placeholder="Enter EPF Number">
+                    </div>
+
+
+
                     <div class="form-group">
                         <label for="employee-phone" class="form-control-label">Phone Number</label>
-                        <input class="form-control" type="tel" name="employee-phone[]" placeholder="Enter phone number">
+                        <input class="form-control" type="tel" name="employee-phone[]" placeholder="Enter phone number" pattern="[0-9]{10,15}" maxlength="10">
                     </div>
                     <div class="form-group">
                         <label for="employee-address" class="form-control-label">Address</label>
@@ -61,6 +69,12 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="employee-leave-balance" class="form-control-label">Leave Balance</label>
+                        <input class="form-control" type="number" name="employee-leave-balance[]"
+                               placeholder="Enter Leave Balance">
+                    </div>
+
+                    <div class="form-group">
                         <label for="employee-allowances" class="form-control-label">Allowances</label>
                         <input class="form-control" type="number" name="employee-allowances[]"
                                placeholder="Enter Allowances">
@@ -70,7 +84,7 @@
                     <div class="form-group">
                         <label for="employee-password" class="form-control-label">Password</label>
                         <input class="form-control" type="password" name="employee-password[]"
-                               placeholder="Enter Password">
+                               placeholder="Enter Password" minlength="6">
                     </div>
                     <button type="button" class="btn btn-danger remove-employee">Remove</button>
                     <hr>

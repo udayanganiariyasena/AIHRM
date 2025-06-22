@@ -69,9 +69,10 @@ def index(request):
 @login_required
 def create(request):
     if request.method == "POST":
-        # Get multiple employee entries from the POST data
+        
         names = request.POST.getlist('employee-name[]')
         emails = request.POST.getlist('employee-email[]')
+        epf_numbers = request.POST.getlist('employee-epf[]')
         phones = request.POST.getlist('employee-phone[]')
         addresses = request.POST.getlist('employee-address[]')
         dobs = request.POST.getlist('employee-dob[]')
@@ -80,6 +81,7 @@ def create(request):
         roles = request.POST.getlist('employee-role[]')
         passwords = request.POST.getlist('employee-password[]')
         basic_salaries = request.POST.getlist('employee-basic_salary[]')
+        leave_balance = request.POST.getlist('employee-leave-balance[]')
         allowances = request.POST.getlist('employee-allowances[]')
         staff_statuses = request.POST.getlist('employee-staff-status[]')
 
@@ -90,6 +92,7 @@ def create(request):
         for i in range(len(names)):
             name = names[i].strip()
             email = emails[i].strip()
+            epf_number = epf_numbers[i].strip()
             phone = phones[i].strip()
             address = addresses[i].strip()
             dob = dobs[i].strip()
@@ -98,6 +101,7 @@ def create(request):
             role = roles[i].strip()
             password = passwords[i].strip()
             basic_salary = basic_salaries[i].strip()
+            leave_balance = leave_balance[i].strip()
             allowance = allowances[i].strip()
             is_staff = staff_statuses[i].strip()
 
@@ -111,6 +115,7 @@ def create(request):
                 employee = Employee(
                     full_name=name,
                     email=email,
+                    epf_number=epf_number,
                     phone=phone,
                     address=address,
                     date_of_birth=datetime.strptime(dob, '%Y-%m-%d'),
@@ -119,6 +124,7 @@ def create(request):
                     role=role,
                     basic_salary=basic_salary,
                     allowance=allowance,
+                    leave_balance=leave_balance,
                     is_staff=int(is_staff),
                 )
                 employee.save()
@@ -234,6 +240,7 @@ def edit_employee(request, employee_id):
         basic_salary = Decimal(request.POST.get('employee-basic_salary', 0.00))
         allowance = Decimal(request.POST.get('employee-allowance', 0.00))
         password = request.POST.get('employee-password')
+        leave_balance = request.POST.get('employee-leave-balance', 0.00)
 
         employee.full_name = name
         employee.email = email
@@ -244,6 +251,7 @@ def edit_employee(request, employee_id):
         employee.department = department
         employee.role = role
         employee.basic_salary = basic_salary
+        employee.leave_balance = leave_balance
         employee.allowance = allowance
         employee.status = int(status)
 

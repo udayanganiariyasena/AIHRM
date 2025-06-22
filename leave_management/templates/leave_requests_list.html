@@ -12,6 +12,22 @@
                            style="float: right">{% trans 'Apply Leave' %}</a>
                 </div>
                 <h6>{% trans 'Leave Requests' %}</h6>
+                            <!-- Leave Balance Card -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card text-white bg-gradient-info mb-3">
+                                <div class="card-header">
+                                    <strong style="color: black">{% trans 'Your Available Leave Balance' %}</strong>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title mb-0">Available Leave Balance</h5>
+                                    <p class="card-text fs-5 fw-bold text-primary">{{ leave_balance }} Days</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <form method="GET" class="row g-3 mt-3">
                     <div class="col-md-3">
                         <label for="leave_type" class="form-label">{% trans 'Leave Type' %}</label>
@@ -40,6 +56,7 @@
                     </div>
                 </form>
             </div>
+
             <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0">
                     <table class="table align-items-center mb-0">

@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+from employee_management.models import Employee
 from home.drive_upload import save_file_in_local
 from .models import LeaveRequest
 
@@ -67,10 +68,19 @@ def list_leave_requests(request):
     leave_types = sorted(set(lr.leave_type for lr in LeaveRequest.objects.all()))
     statuses = sorted(set(lr.status for lr in LeaveRequest.objects.all()))
 
+    leave_balance = None
+    try:
+        employee = Employee.objects.get(email=request.user.email)
+        print(employee)
+        leave_balance = employee.leave_balance
+    except Employee.DoesNotExist:
+        leave_balance = "0.00"
+
     context = {
         'page_obj': page_obj,  # Paginated leave requests
         'leave_types': leave_types,
         'statuses': statuses,
+        'leave_balance': leave_balance,
         'filters': {
             'leave_type': leave_type,
             'status': status,
@@ -120,3 +130,12 @@ def delete_leave_request(request, leave_id):
     leave_request.delete()
     messages.success(request, "Leave request deleted successfully!")
     return redirect("leave_requests_list")
+
+
+@login_required
+def get_leave_balance(request, id):
+    leave_request = get_object_or_404(LeaveRequest, id=int(leave_id))
+    context = {
+        "leave_request": leave_request
+    }
+    return render(request, "leave_request_view.html", context)
